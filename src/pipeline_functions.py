@@ -51,60 +51,116 @@ def format_date(date_str):
             return f"20{parts[2]}-{parts[0].zfill(2)}-{parts[1].zfill(2)}"
     return "INVALID"
 
-def clean_case_data(case_list):
-    """Clean a list of case records.
+def clean_case_data(cases: list[dict]) -> list[dict]:
+    """Clean and standardize a list of disease case records.
 
     Args:
-        case_list (list): List of dictionaries, each representing a disease case.
+        cases (list[dict]): A list of case dictionaries containing 'date', 'location', and 'cases'.
 
     Returns:
-        list: Cleaned list of valid cases.
+        list[dict]: A cleaned list of valid, standardized case dictionaries.
 
-    Example:
-        >>> clean_case_data([
-        ... {'date': '03/01/25', 'location': 'DC', 'age': 30, 'cases': '4'},
-        ... {'date': '', 'location': 'MD', 'age': None, 'cases': 3}
-        ... ])
-        [{'date': '2025-03-01', 'location': 'DC', 'age': 30, 'cases': 4}]
+    Raises:
+        TypeError: If input is not a list of dictionaries.
+
+    Examples:
+        >>> clean_case_data([{"date": "03/01/25", "location": "boston", "cases": "10"}])
+        [{'date': '2025-03-01', 'location': 'Boston', 'cases': 10}]
     """
-    cleaned = []
-    for case in case_list:
-        if not validate_case_entry(case):
+    if not isinstance(cases, list):
+        raise TypeError("Input must be a list of dictionaries.")
+
+    cleaned_data = []
+    for record in cases:
+        if not validate_case_entry(record):
             continue
-        case["date"] = format_date(case["date"])
-        if case["date"] == "INVALID":
+
+        formatted_date = format_date(record["date"])
+        if formatted_date == "INVALID":
             continue
+
         try:
-            case["cases"] = int(case["cases"])
-        except (ValueError, TypeError):
+            case_count = int(record["cases"])
+        except ValueError:
             continue
-        cleaned.append(case)
-    return cleaned
 
-def aggregate_cases_by_date(cleaned_cases):
-    """Aggregate total disease cases by date.
+        cleaned_record = {
+            "date": formatted_date,
+            "location": record["location"].strip().title(),
+            "cases": case_count
+        }
+        cleaned_data.append(cleaned_record)
+
+    return cleaned_data
+
+
+def generate_epidemic_summary(cases: list[dict]) -> dict:
+    """Generate a statistical summary from cleaned disease case records.
 
     Args:
-        cleaned_cases (list): List of cleaned case dictionaries.
+        cases (list[dict]): List of standardized case dictionaries.
 
     Returns:
-        dict: Dictionary with date strings as keys and total case counts as values.
+        dict: A dictionary containing aggregate statistics such as total cases,
+              cases per location, peak day, and averages.
 
-    Example:
-        >>> aggregate_cases_by_date([
-        ... {'date': '2025-03-01', 'cases': 4},
-        ... {'date': '2025-03-01', 'cases': 6},
-        ... {'date': '2025-03-02', 'cases': 2}
-        ... ])
-        {'2025-03-01': 10, '2025-03-02': 2}
+    Raises:
+        TypeError: If input is not a list of dictionaries or if records are invalid.
+
+    Examples:
+        >>> sample = [
+        ...     {"date": "2025-03-01", "location": "Boston", "cases": 10},
+        ...     {"date": "2025-03-02", "location": "Boston", "cases": 20},
+        ...     {"date": "2025-03-01", "location": "Chicago", "cases": 15},
+        ... ]
+        >>> generate_epidemic_summary(sample)
+        {
+            'total_cases': 45,
+            'unique_locations': 2,
+            'cases_by_location': {'Boston': 30, 'Chicago': 15},
+            'peak_day': {'date': '2025-03-02', 'cases': 20},
+            'average_daily_cases': 22.5,
+            'time_span': {'start': '2025-03-01', 'end': '2025-03-02'}
+        }
     """
-    result = {}
-    for record in cleaned_cases:
+    if not isinstance(cases, list) or not all(isinstance(c, dict) for c in cases):
+        raise TypeError("Input must be a list of dictionaries.")
+
+    total_cases = 0
+    cases_by_location = {}
+    cases_by_date = {}
+    dates = set()
+
+    for record in cases:
         date = record.get("date")
+        location = record.get("location")
         count = record.get("cases", 0)
-        if not isinstance(count, int):
+
+        if not (date and location):
             continue
-        if date not in result:
-            result[date] = 0
-        result[date] += count
-    return result
+
+        total_cases += count
+        dates.add(date)
+        cases_by_location[location] = cases_by_location.get(location, 0) + count
+        cases_by_date[date] = cases_by_date.get(date, 0) + count
+
+    if not cases_by_date:
+        return {}
+
+    # Find peak day
+    peak_date = max(cases_by_date, key=cases_by_date.get)
+    peak_count = cases_by_date[peak_date]
+
+    # Calculate average daily cases
+    average_daily = total_cases / len(cases_by_date)
+
+    summary = {
+        "total_cases": total_cases,
+        "unique_locations": len(cases_by_location),
+        "cases_by_location": cases_by_location,
+        "peak_day": {"date": peak_date, "cases": peak_count},
+        "average_daily_cases": round(average_daily, 2),
+        "time_span": {"start": min(dates), "end": max(dates)}
+    }
+
+    return summary
