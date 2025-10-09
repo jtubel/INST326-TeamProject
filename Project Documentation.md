@@ -7,6 +7,7 @@
 - `generate_epidemic_summary()` — Generates a statistical summary from cleaned disease case records
 - `is_valid_location()` — Validates a location string for correctness.
 - `normalize_age()` — Normalizes age formats (number or range) into a single integer.
+
 **Files Modified:**  
 - `src/pipeline_functions.py` — Main functions implemented here.
 - `src/helper_utils.py` — Helper functions implemented here.  
