@@ -10,5 +10,5 @@
 
 **Files Modified:**  
 - `src/pipeline_functions.py` — All functions implemented here.  
-- `docs/function_reference.md` — Added documentation for each function with examples.  
+- `docs/function_reference.md` — Added documentation for each function.
 
