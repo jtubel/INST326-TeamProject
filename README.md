@@ -1,97 +1,115 @@
-Members: 
-Chioma Agoh
-Kindness Harbor
-Julian Tubel
-Yonael Zeamann
+#  Information Management Project — Health (COVID) Data Pipeline Framework
 
-Roles:
+---
 
-Project Coordinator - Yonael Zeamman 
-Documentation Manager - Chioma Agoh
-Liaison -  Kindness Harbor
-Quality Assurance  - Julian Tubel
+##  Team Members
+- **Chioma Agoh**  
+- **Kindness Harbor**  
+- **Julian Tubel**  
+- **Yonael Zeamann**
 
-Communication: We established a group on GroupMe and plan to meet every Tuesday at 3:00 pm
+---
 
-Conflict Resolution Strategy:
-Active listening to member issues
-Be willing to compromise
-Be ready for neutral mediation i.e. bringing TA to resolve issues
-Clarify expectations and responsibilities
+##  Roles
+| Role | Member |
+|------|---------|
+| **Project Coordinator** | Yonael Zeamann |
+| **Documentation Manager** | Chioma Agoh |
+| **Liaison** | Kindness Harbor |
+| **Quality Assurance** | Julian Tubel |
 
-Information Management Project: Data Pipeline Framework
+---
 
-Specific Problem: Public-health teams often struggle to:
-Combine case data from many sources (CSV, JSON, XML).
+##  Communication
+- **Platform:** GroupMe (team group established)  
+- **Regular Meeting:** Tuesdays at **3:00 PM ET**
 
+---
 
-Check that reported case counts are valid and consistent.
+##  Conflict Resolution Strategy
+1. Practice active listening to understand member concerns.  
+2. Seek compromise and constructive trade-offs.  
+3. If needed, request neutral mediation (e.g., TA involvement).  
+4. Clarify expectations and responsibilities early to avoid misunderstandings.
 
+---
 
-Clean and standardize messy data (e.g., missing values, wrong dates).
+##  Project Overview
+**Title:** Health Data Pipeline Framework  
+**Domain:** Research Data Management (Public Health)  
+**Goal:**  
+Build a modular function library and data pipeline that loads, cleans, validates, transforms, and summarizes disease case data — enabling faster insights and decision-making.
 
+---
 
-Transform raw data into charts or tables for decision-makers.
+##  Problem Statement
+Public-health teams often struggle to:
 
+- Combine case data from multiple sources and formats (CSV, JSON, XML).  
+- Validate reported case counts for accuracy and consistency.  
+- Clean and standardize messy inputs (missing values, wrong dates, inconsistent names).  
+- Transform raw data into visual summaries for reports.  
+- Organize outputs for multiple research projects.
 
-Keep reports organized for different research projects.
+---
 
+##  Project Features & Scope
 
+###  Core (Must-Have)
+- **Data Import:** Read CSV, JSON, and XML files.  
+- **Validation & Cleaning:** Check for missing/invalid entries and fix simple errors.  
+- **Transformations:** Aggregate by date, location, or age group.  
+- **Basic Visualizations:**  
+  - Line charts for case counts  
+  - Bar charts for locations  
+- **Automated Reports:** Generate summary tables and charts for each dataset.  
+- **Configuration Options:** Allow users to select which steps to execute (e.g., cleaning, charting, reporting).
 
+###  Nice-to-Have (Future Enhancements)
+- Export cleaned datasets to new files.  
+- Additional chart types (heatmaps, stacked bars).  
+- Support for live data ingestion from APIs.  
+- Save user preferences for repeated analyses.  
+- Generate email or PDF reports automatically.
 
+---
 
+##  Growth & Complexity Roadmap
 
-Project Features & Scope
+### **Phase 1 — MVP**
+- Load one public-health dataset.  
+- Clean and validate the data.  
+- Produce a simple line chart showing case counts over time.  
 
- We will design a modular research data pipeline framework to improve how disease case data is processed and analyzed.
-Core Features (Must-Have)
-Data Import: Read CSV, JSON, and XML case files.
+### **Phase 2 — Expansion**
+- Support multiple datasets and more complex aggregations.  
+- Add moving averages or weekly incidence calculations.  
 
+### **Phase 3 — Interface & Automation**
+- Add a simple CLI or UI to select pipeline steps.  
+- Enable dataset export and optional report automation.  
 
-Validation & Cleaning: Check for missing or invalid entries, fix simple errors.
+---
 
+##  Next Steps
+- Finalize function list and file layout (`utils.py`, `validation.py`, `cleaning.py`, etc.).  
+- Assign development tasks and peer review responsibilities.  
+- Prepare an example dataset and demonstration script (`examples/demo_script.py`).  
+- Document AI assistance and individual learning (per course AI Collaboration Guidelines).  
 
-Transformations: Aggregate data by date, location, or age group.
+---
 
+##  AI Collaboration Policy
+We follow the **AI Collaboration Guidelines** for responsible development:
 
-Basic Visualizations: Line charts for case counts, bar charts for locations.
+- **AI assistance** is allowed for:  
+  - Drafting function structures  
+  - Writing and formatting docstrings  
+  - Debugging and optimization  
+- **Team responsibilities:**  
+  - Understand and validate all AI-generated code  
+  - Modify outputs to fit our domain context  
+  - Document prompts and validation steps in personal AI journals  
+  - Ensure all contributions meet project requirements  
 
-
-Automated Report: Create a simple summary (tables + charts) for each dataset.
-
-
-Configuration: Allow users to choose which steps (cleaning, charts, reports) run.
-
-
-Nice-to-Have Features
-Export cleaned datasets to new files.
-
-
-More chart options (heatmaps, stacked bars).
-
-
-Handle live data from APIs.
-
-
-Save user settings for repeated analyses.
-
-
-Email or PDF reports.
-
-
-
-Growth & Complexity:
-
-We’ll begin with a small, clear goal: load one public-health dataset, clean the data, and create a single chart showing case counts over time.
-As we move along with the project, we can add:
-Support for larger datasets.
-
-
-New analysis tools, like moving averages or weekly incidence rates.
-
-
-A simple menu or interface so users can choose what steps to run.
-
-
-The framework will expand step by step, helping us learn while keeping the workload manageable.
 
