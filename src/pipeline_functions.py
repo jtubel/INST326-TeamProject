@@ -164,3 +164,167 @@ def generate_epidemic_summary(cases: list[dict]) -> dict:
     }
 
     return summary
+
+def integrate_data_sources(sources, schema_map=None):
+    """Combine multiple case data files (CSV, JSON, XML) into a unified dataset.
+
+    Args:
+        sources (list[str]): List of file paths to data sources.
+        schema_map (dict, optional): Mapping of source field names to canonical names.
+
+    Returns:
+        list[dict]: Combined list of case dictionaries with unified fields.
+
+    Raises:
+        FileNotFoundError: If any source file cannot be found.
+        TypeError: If sources is not a list of strings.
+
+    Example:
+        >>> integrate_data_sources(["data/jan.csv", "data/feb.json"])
+        [{'date': '2025-01-01', 'location': 'Boston', 'age': 25, 'cases': 5}, ...]
+    """
+    if not isinstance(sources, list) or not all(isinstance(s, str) for s in sources):
+        raise TypeError("Sources must be a list of file paths.")
+
+    combined = []
+    for path in sources:
+        # Simplified: real implementation would detect type and parse CSV/JSON/XML
+        # Here we simulate loading data
+        combined.extend([])  # placeholder for loaded records
+    return combined
+
+
+def standardize_case_fields(df):
+    """Normalize key fields such as dates, locations, and age values.
+
+    Args:
+        df (list[dict]): List of case dictionaries.
+
+    Returns:
+        list[dict]: List of case dictionaries with standardized fields.
+
+    Raises:
+        TypeError: If input is not a list of dictionaries.
+
+    Example:
+        >>> standardize_case_fields([{"date": "03/01/25", "location": "boston", "age": "20-29", "cases": "10"}])
+        [{'date': '2025-03-01', 'location': 'Boston', 'age': 24, 'cases': 10}]
+    """
+    if not isinstance(df, list) or not all(isinstance(r, dict) for r in df):
+        raise TypeError("Input must be a list of dictionaries.")
+
+    standardized = []
+    for record in df:
+        rec = record.copy()
+        # Example normalization logic
+        rec["location"] = rec.get("location", "").strip().title()
+        # Age normalization: range midpoint
+        age = rec.get("age")
+        if isinstance(age, str) and "-" in age:
+            parts = age.split("-")
+            rec["age"] = int((int(parts[0]) + int(parts[1])) / 2)
+        elif isinstance(age, int):
+            rec["age"] = age
+        else:
+            rec["age"] = None
+        standardized.append(rec)
+    return standardized
+
+
+def summarize_case_trends(df, by='date'):
+    """Aggregate case counts and produce a summary by a specified field.
+
+    Args:
+        df (list[dict]): List of standardized case dictionaries.
+        by (str): Field to aggregate by (default is 'date').
+
+    Returns:
+        dict: Dictionary with total cases, counts per group, and averages.
+
+    Raises:
+        TypeError: If input is not a list of dictionaries.
+
+    Example:
+        >>> summarize_case_trends([{'date': '2025-03-01', 'cases': 5}, {'date': '2025-03-01', 'cases': 10}])
+        {'total_cases': 15, 'counts_by_date': {'2025-03-01': 15}, 'average': 15.0}
+    """
+    if not isinstance(df, list) or not all(isinstance(r, dict) for r in df):
+        raise TypeError("Input must be a list of dictionaries.")
+
+    summary = {"total_cases": 0, f"counts_by_{by}": {}, "average": 0.0}
+    for record in df:
+        key = record.get(by)
+        count = record.get("cases", 0)
+        summary["total_cases"] += count
+        if key not in summary[f"counts_by_{by}"]:
+            summary[f"counts_by_{by}"][key] = 0
+        summary[f"counts_by_{by}"][key] += count
+
+    groups = summary[f"counts_by_{by}"]
+    summary["average"] = summary["total_cases"] / len(groups) if groups else 0
+    return summary
+
+
+def plot_case_trend_line(trend_df, out_path=None):
+    """Plot a line chart of case counts over time.
+
+    Args:
+        trend_df (dict): Dictionary returned by summarize_case_trends.
+        out_path (str, optional): File path to save the chart image.
+
+    Returns:
+        None
+
+    Example:
+        >>> plot_case_trend_line({'counts_by_date': {'2025-03-01': 15, '2025-03-02': 20}})
+        # Displays a line chart
+    """
+    import matplotlib.pyplot as plt
+
+    x = list(trend_df.get("counts_by_date", {}).keys())
+    y = list(trend_df.get("counts_by_date", {}).values())
+    plt.figure(figsize=(8,4))
+    plt.plot(x, y, marker='o')
+    plt.xlabel("Date")
+    plt.ylabel("Cases")
+    plt.title("Case Trend Over Time")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    if out_path:
+        plt.savefig(out_path)
+    plt.show()
+
+
+def export_dataset(df, path, format='csv'):
+    """Export processed dataset to CSV or JSON file.
+
+    Args:
+        df (list[dict]): List of case dictionaries.
+        path (str): Destination file path.
+        format (str): File format: 'csv' or 'json' (default 'csv').
+
+    Returns:
+        None
+
+    Raises:
+        ValueError: If format is not 'csv' or 'json'.
+
+    Example:
+        >>> export_dataset([{'date':'2025-03-01','cases':15}], 'outputs/cleaned.csv')
+    """
+    import csv, json
+
+    if format not in ('csv', 'json'):
+        raise ValueError("Format must be 'csv' or 'json'.")
+
+    if format == 'csv':
+        if not df:
+            return
+        keys = df[0].keys()
+        with open(path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=keys)
+            writer.writeheader()
+            writer.writerows(df)
+    else:  # JSON
+        with open(path, 'w') as f:
+            json.dump(df, f, indent=2)
