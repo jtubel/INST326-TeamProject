@@ -76,7 +76,7 @@ Public-health teams often struggle to:
 
 ##  Growth & Complexity Roadmap
 
-### **Phase 1 Basics **
+### **Phase 1 Basics**
 - Load one public-health dataset.  
 - Clean and validate the data.  
 - Produce a simple line chart showing case counts over time.  
