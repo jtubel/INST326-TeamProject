@@ -76,7 +76,7 @@ Public-health teams often struggle to:
 
 ##  Growth & Complexity Roadmap
 
-### **Phase 1 — MVP**
+### **Phase 1 Basics **
 - Load one public-health dataset.  
 - Clean and validate the data.  
 - Produce a simple line chart showing case counts over time.  
@@ -85,7 +85,7 @@ Public-health teams often struggle to:
 - Support multiple datasets and more complex aggregations.  
 - Add moving averages or weekly incidence calculations.  
 
-### **Phase 3 — Interface & Automation**
+### **Phase 3 — Interface**
 - Add a simple CLI or UI to select pipeline steps.  
 - Enable dataset export and optional report automation.  
 
@@ -98,18 +98,3 @@ Public-health teams often struggle to:
 - Document AI assistance and individual learning (per course AI Collaboration Guidelines).  
 
 ---
-
-##  AI Collaboration Policy
-We follow the **AI Collaboration Guidelines** for responsible development:
-
-- **AI assistance** is allowed for:  
-  - Drafting function structures  
-  - Writing and formatting docstrings  
-  - Debugging and optimization  
-- **Team responsibilities:**  
-  - Understand and validate all AI-generated code  
-  - Modify outputs to fit our domain context  
-  - Document prompts and validation steps in personal AI journals  
-  - Ensure all contributions meet project requirements  
-
-
