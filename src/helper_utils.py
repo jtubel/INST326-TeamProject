@@ -58,4 +58,30 @@ def normalize_age(age_value) -> int:
         elif age_value.isdigit():
             return int(age_value)
 
-    return -1
+    return -1 
+
+def calculate_case_fatality_rate(total_cases: int, total_deaths: int) -> float:
+    """
+    Calculate the case fatality rate as a percentage.
+    
+    Args:
+        total_cases (int): Total number of cases
+        total_deaths (int): Total number of deaths
+    
+    Returns:
+        float: Fatality rate as a percentage
+    
+    Examples:
+        >>> calculate_case_fatality_rate(1000, 25)
+        2.5
+    """
+    if not isinstance(total_cases, int) or not isinstance(total_deaths, int):
+        raise TypeError("Both inputs must be integers")
+    if total_cases < 0 or total_deaths < 0:
+        raise ValueError("Case and death counts cannot be negative")
+    if total_cases == 0:
+        raise ValueError("Total cases cannot be zero")
+    
+    return (total_deaths / total_cases) * 100
+
+
