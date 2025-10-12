@@ -437,4 +437,186 @@ if data.empty or not {'date', 'location', 'case'}.issubset(data.columns):
     plt.ylabel("Location")
     plt.tight_layout()
     plt.savefig(output_path)
-    plt.show()
+    plt.show() 
+
+"""
+pipeline_functions.py
+Yonael Zeamann - Statistical Analysis & Forecasting Functions
+
+This module has functions for analyzing epidemic case data and making predictions.
+Works with the cleaned data from the other team members' functions.
+"""
+
+from typing import List, Dict, Any
+from datetime import datetime, timedelta
+from statistics import mean, stdev
+
+
+def calculate_moving_average(case_data: List[int], window_size: int = 7) -> List[float]:
+    """
+    Calculate moving average of case counts to smooth out the data.
+    
+    Args:
+        case_data (list): List of daily case counts
+        window_size (int): How many days to average together (default is 7)
+    
+    Returns:
+        list: List of averaged values (same length as input)
+    
+    Raises:
+        ValueError: If window_size is too big or less than 1
+        TypeError: If case_data isn't a list of numbers
+    
+    Examples:
+        >>> calculate_moving_average([10, 20, 30, 40, 50], 3)
+        [10.0, 15.0, 20.0, 30.0, 40.0]
+    """
+    if not isinstance(case_data, list):
+        raise TypeError("case_data must be a list")
+    if not all(isinstance(x, (int, float)) for x in case_data):
+        raise TypeError("All elements in case_data must be numbers")
+    if window_size < 1:
+        raise ValueError("Window size must be at least 1")
+    if window_size > len(case_data):
+        raise ValueError("Window size cannot be larger than data length")
+    
+    moving_averages = []
+    for i in range(len(case_data)):
+        start_idx = max(0, i - window_size + 1)
+        window = case_data[start_idx:i + 1]
+        moving_averages.append(sum(window) / len(window))
+    
+    return moving_averages
+
+
+def generate_outbreak_alert_report(cases_by_location: Dict[str, List[Dict]], 
+                                   threshold: int = 50,
+                                   days_to_analyze: int = 7) -> Dict[str, Any]:
+    """
+    Create an alert report showing which locations have high case counts.
+    
+    Args:
+        cases_by_location (dict): Dictionary with location names as keys and 
+                                 lists of case records as values.
+        threshold (int): Alert if cases go above this number (default is 50)
+        days_to_analyze (int): How many recent days to look at (default is 7)
+    
+    Returns:
+        dict: Report with these fields,'alert_locations', 'total_alerts',
+        'highest_risk','growth_rates','recommendations'.
+    
+    Raises:
+        ValueError: If threshold is negative or days_to_analyze is less than 1
+        TypeError: If cases_by_location isn't a dictionary
+    
+    Examples:
+        >>> data = {
+        ...     "City A": [{"date": "2025-01-01", "cases": 60}],
+        ...     "City B": [{"date": "2025-01-01", "cases": 30}]
+        ... }
+        >>> report = generate_outbreak_alert_report(data, threshold=50)
+        >>> report['total_alerts']
+        1
+    """
+    if not isinstance(cases_by_location, dict):
+        raise TypeError("cases_by_location must be a dictionary")
+    if threshold < 0:
+        raise ValueError("Threshold cannot be negative")
+    if days_to_analyze < 1:
+        raise ValueError("days_to_analyze must be at least 1")
+    
+    alert_locations = []
+    growth_rates = {}
+    highest_risk = None
+    highest_count = 0
+    
+    for location, case_records in cases_by_location.items():
+        if not case_records:
+            continue
+        
+        recent_cases = case_records[-days_to_analyze:]
+        total_recent = sum(record.get('cases', 0) for record in recent_cases)
+        
+        if total_recent >= threshold:
+            alert_message = f"ALERT: {location} has {total_recent} cases (threshold: {threshold})"
+            alert_locations.append({
+                'location': location,
+                'total_cases': total_recent,
+                'alert_message': alert_message
+            })
+        
+        if total_recent > highest_count:
+            highest_count = total_recent
+            highest_risk = location
+        
+        if len(recent_cases) >= 2:
+            first_count = recent_cases[0].get('cases', 0)
+            last_count = recent_cases[-1].get('cases', 0)
+            if first_count > 0:
+                growth_rate = ((last_count - first_count) / first_count) * 100
+                growth_rates[location] = round(growth_rate, 2)
+    
+    recommendations = []
+    if len(alert_locations) > 0:
+        recommendations.append("Immediate investigation required for alert locations")
+    if len(alert_locations) > 3:
+        recommendations.append("Consider regional coordination for outbreak response")
+    if highest_count > threshold * 2:
+        recommendations.append(f"Priority response needed in {highest_risk}")
+    
+    return {
+        'alert_locations': alert_locations,
+        'total_alerts': len(alert_locations),
+        'highest_risk': highest_risk,
+        'highest_count': highest_count,
+        'growth_rates': growth_rates,
+        'recommendations': recommendations,
+        'analysis_period_days': days_to_analyze
+    }
+
+
+def predict_future_cases(historical_cases: List[int], days_ahead: int = 7) -> List[int]:
+    """
+    Uses average change and predicts future cases.
+    
+    Args:
+        historical_cases (list): List of past daily case counts
+        days_ahead (int): How many days into the future to predict (default is 7)
+    
+    Returns:
+        list: Predicted case counts for future days
+    
+    Raises:
+        ValueError: If we don't have enough data 
+        TypeError: If historical_cases isn't a list of numbers
+    
+    Examples:
+        >>> predict_future_cases([10, 15, 20, 25, 30], 3)
+        [35, 40, 45]
+    """
+    if not isinstance(historical_cases, list):
+        raise TypeError("historical_cases must be a list")
+    if len(historical_cases) < 3:
+        raise ValueError("Need at least 3 historical data points for prediction")
+    if days_ahead < 1:
+        raise ValueError("days_ahead must be at least 1")
+    if not all(isinstance(x, (int, float)) for x in historical_cases):
+        raise TypeError("All elements must be numbers")
+    
+    daily_changes = []
+    for i in range(1, len(historical_cases)):
+        change = historical_cases[i] - historical_cases[i-1]
+        daily_changes.append(change)
+    
+    avg_change = sum(daily_changes) / len(daily_changes)
+    
+    predictions = []
+    last_value = historical_cases[-1]
+    
+    for day in range(days_ahead):
+        next_value = last_value + avg_change
+        next_value = max(0, int(round(next_value)))
+        predictions.append(next_value)
+        last_value = next_value
+    
+    return predictions
