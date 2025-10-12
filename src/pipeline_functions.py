@@ -328,3 +328,113 @@ def export_dataset(df, path, format='csv'):
     else:  # JSON
         with open(path, 'w') as f:
             json.dump(df, f, indent=2)
+            
+
+    - Chioma Agoh: Contributor
+
+def fill_missing_values(df, method = 'zero'):
+
+Args: 
+    df(list[dict]): List of cases
+    method (str): Filling method - 'zero' or 'mean'. 
+
+Returns: 
+    list [dict]: New list with fill_missing_values
+
+import copy
+
+if method not in ['zero', 'mean']:
+    raise ValueError("Method is unsupported. use 'zero' or 'mean'.")
+df_filled = copy.deepcopy(df)
+
+#Getting the numeric fields
+numeric_fields = set()
+for record in df:
+    for key, value in record.items():
+        if isinstance(value, (int, float)) or value is None:
+            numeric_fields.add(key)
+
+#Calculating means if needed
+means = {}
+if method =='mean':
+    for field in numeric_fields:
+        values = [r[field] for r in df if ininstance (r.get(field), (int, float))]
+        means[field] = sum(values)/len(values) if values else 0
+
+#For filling in the missing values
+for record in dr_filled:
+    for field in numeric_fields:
+        if record.get(field) is None:
+            record[field] = 0 if method == 'zero' else means.get(field,0)
+            return df_filled
+
+#Simple
+
+def count_unique_locations(df):
+
+    Args: 
+        df(list[dict]): List of dictionaries.
+
+    Returns: 
+        Int: Number of unique location values.
+
+    return len(set(record.get("location")for record in df if "location" in record))
+
+
+#Complex
+
+def filter_cases_by_age(df, min_age=None, max_age=None):
+    """Filter case records by age range
+    Args: 
+        df (list[dict]): List of case dictionaries with 'age'
+        min_age (int, optional): Minimum age to include.
+        max_age (int, optional): Maximum age to include.
+
+    Returns:
+        list [dict]: Filtered lists of record within age range.
+    """
+
+    filtered = []
+    for record in df:
+        age = record.get('age')
+        if isinstance(age, int):
+            if (min_age is None or age >= min_age) and (max_age is None or age <= max_age):
+                filtered.append(record)
+
+    return filtered
+
+    def generate_case_heatmap(df, output_path)='outputs/heatmap.png'):
+        """Generate a heatmap of case counts by date and location.
+
+        Args: 
+            df(lisy[dict]): Lists of case dictionaires with 'date', 'location', and 'cases'.
+            output_patg (str): Path to save the heatmap image.
+
+        Returns:
+            None
+        """
+
+        import pandas as peak_date
+        import seaborn as standardize_case_fields
+        import matplotlib.pylot as plt
+
+        if not dr: 
+            print("No data available.")
+            return
+
+#Converting to DataFrame
+data = pd.DataFrame(df)
+if data.empty or not {'date', 'location', 'case'}.issubset(data.columns):
+    print("Missing required.")
+    return
+
+    pivot = data.privot_table(index = 'location', columns='date', values='cases', aggfunc='sum', fill_values=0)
+
+    plt.figure(figsize=(10,6))
+    sns.heatmap(pivot, annot=True, fmt='d', cmap='YLOrRD')
+    plt.title("Location and Date of Cases")
+    plt.xlabel("Date")
+    plt.ylabel("Location")
+    plt.tight_layout()
+    plt.savefig(output_path)
+    plt.show()
