@@ -1,8 +1,5 @@
 ---
 
-## `docs/class_design.md`
-
-```markdown
 # Class and Method Design
 
 Classes designed by Julian Tubel
