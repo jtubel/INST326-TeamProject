@@ -3,10 +3,7 @@
 ---
 
 ## Team Members
-- **Chioma Agoh**  
-- **Kindness Harbor**  
-- **Julian Tubel**  
-- **Yonael Zeamann**
+- **Chioma Agoh** - **Kindness Harbor** - **Julian Tubel** - **Yonael Zeamann**
 
 ---
 
@@ -37,8 +34,7 @@
 ## Project Overview
 **Title:** Health Data Pipeline Framework  
 **Domain:** Research Data Management (Public Health)  
-**Goal:**  
-Build a modular function library and data pipeline that loads, cleans, validates, transforms, and summarizes disease case data — enabling faster insights and decision-making.
+**Goal:** Build a modular function library and data pipeline that loads, cleans, validates, transforms, and summarizes disease case data — enabling faster insights and decision-making.
 
 ---
 
@@ -59,8 +55,7 @@ Public-health teams often struggle to:
 - **Data Import:** Read CSV, JSON, and XML files.  
 - **Validation & Cleaning:** Check for missing/invalid entries and fix simple errors.  
 - **Transformations:** Aggregate by date, location, or age group.  
-- **Basic Visualizations:**  
-  - Line charts for case counts  
+- **Basic Visualizations:** - Line charts for case counts  
   - Bar charts for locations  
 - **Automated Reports:** Generate summary tables and charts for each dataset.  
 - **Configuration Options:** Allow users to select which steps to execute (e.g., cleaning, charting, reporting).
@@ -97,23 +92,39 @@ These updates made the codebase more readable, reusable, and easier to maintain 
 
 ---
 
-### **Phase 3 — Advanced OOP (In Progress)**
-The next stage will extend the current classes using **inheritance, polymorphism, and composition** to create a more flexible and scalable framework.
+### **Phase 3 — Advanced OOP (Completed)**
+Part 3 expanded the system architecture using **inheritance, polymorphism, and composition** to improve code flexibility and reduce duplication across the team's modules.
+
+**Key Achievements**
+- **Inheritance Hierarchies:** Established base classes for data handling, analysis, and reporting to enforce consistent interfaces.
+- **Abstract Base Classes:** Utilized Python's `abc` module to define strict contracts for derived classes, ensuring system stability.
+- **Polymorphism:** Implemented dynamic methods that behave differently based on file type and analysis strategy, streamlining the main execution pipeline.
+- **Composition:** Restructured relationships between system components (Managers, Datasets, and Reports) using "has-a" logic to improve separation of concerns.
+
+These structural updates allow the framework to easily scale for new data formats and analysis tools in the final integration phase.
+
+---
+
+### **Phase 4 — Capstone Integration & Testing (In Progress)**
+The final phase focuses on integrating all individual components (Data Ingestion, Analysis, Reporting) into a cohesive, portfolio-ready application. This phase emphasizes **system completeness, data persistence, and professional quality assurance.**
 
 **Planned Goals**
-- Introduce base and derived class hierarchies for dataset types.  
-- Implement abstract base classes to define shared interfaces.  
-- Demonstrate polymorphism with methods that behave differently across subclasses.  
-- Use composition to represent “has-a” relationships between pipeline components.  
-- Expand testing and documentation for class hierarchies and dynamic behavior.
+- **System Completeness:** Connect the Data, Analysis, and Reporting layers via a central Pipeline Manager.
+- **Data Persistence & I/O:**
+  - Implement "Save/Load" functionality to persist program state between sessions.
+  - Ensure robust Import/Export capabilities for generating analysis reports.
+- **Comprehensive Testing (QA Focus):**
+  - **Integration Tests:** Verify that Datasets correctly feed into Analyzers and that Analyzers correctly trigger Reports.
+  - **System Tests:** Validate complete end-to-end user workflows (Input → Analysis → Output).
+- **Documentation & Presentation:** Finalize architecture documentation and record a 5-10 minute video demonstrating the system's functionality and code quality.
 
 ---
 
 ## Next Steps
-- Finalize inheritance hierarchy and abstract class design.  
-- Implement polymorphic methods for specialized dataset handling.  
-- Add composition relationships between system components.  
-- Continue updating documentation and usage examples.  
-- Prepare UML-style diagrams for the final submission.
+- **Merge Codebases:** Combine the finalized Phase 3 branches from all team members into the main repository.
+- **Implement Persistence:** Add logic to save the current analysis state to a file and reload it later.
+- **Develop Test Suite:** Write Integration and System tests to verify the full workflow (QA Lead responsibility).
+- **Finalize Documentation:** Update the README and Architecture docs to reflect the complete system.
+- **Record Presentation:** Film the group video covering domain goals, architecture, and individual learning statements.
 
 ---
