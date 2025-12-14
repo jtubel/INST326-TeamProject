@@ -49,7 +49,7 @@
 │              │ managed by                         │ used by             │
 │              │                                    │                     │
 │  ┌───────────┴────────────────────────────────────┴──────────────────┐  │
-│  │                        [YONAEL'S MODULE]                          │  │
+│  │                        [CHIOMA'S MODULE]                          │  │
 │  │                         PipelineManager                           │  │
 │  │                    (System Controller/Coordinator)                │  │
 │  ├───────────────────────────────────────────────────────────────────┤  │
@@ -58,19 +58,19 @@
 │  │                                                                   │  │
 │  │ + add_dataset(source)                                             │  │
 │  │ + run_full_analysis()                                             │  │
+│  │ + save_session_state()             ◄────── PROJ 4: PERSISTENCE    │  │
+│  │ + load_session_state()             ◄────── PROJ 4: PERSISTENCE    │  │
 │  └─────────────────────────────────┬─────────────────────────────────┘  │
 │                                    │                                    │
 │                                    │ generates data for                 │
 │                                    ▼                                    │
 │  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                        [CHIOMA'S MODULE]                          │  │
-│  │                           AlertReport                             │  │
+│  │                        [YONAEL'S MODULE]                          │  │
+│  │                        ForecastingAnalyzer                        │  │
+│  │                      (Advanced Predictions)                       │  │
 │  ├───────────────────────────────────────────────────────────────────┤  │
-│  │ + threshold_level                                                 │  │
-│  │ + recipients_list                                                 │  │
-│  │                                                                   │  │
-│  │ + generate_alert(analysis_results)                                │  │
-│  │ + save_report_to_file()                                           │  │
+│  │ + predict_future_cases()                                          │  │
+│  │ + generate_growth_metrics()                                       │  │
 │  └───────────────────────────────────────────────────────────────────┘  │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
