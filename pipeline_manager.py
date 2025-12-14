@@ -42,7 +42,36 @@ def load(self, filename):
     self.results = load_state(filename)
     with open(DATA_DIR / filename) as f:
         return json.load(f)
+def save_state(self, filename: str = "pipeline_state.pkl"):
+        """
+        PROJ 4: DATA PERSISTENCE
+        Saves the current state of the pipeline (loaded datasets and analyzers) to a file.
+        """
+        try:
+            with open(filename, 'wb') as f:
+                pickle.dump(self, f)
+            print(f"System state successfully saved to {filename}")
+        except IOError as e:
+            print(f"Error saving system state: {e}")
 
+    @staticmethod
+    def load_state(filename: str = "pipeline_state.pkl"):
+        """
+        PROJ 4: DATA PERSISTENCE
+        Loads a previously saved pipeline state from a file.
+        """
+        if not os.path.exists(filename):
+            print(f"No saved state found at {filename}")
+            return None
+        
+        try:
+            with open(filename, 'rb') as f:
+                manager = pickle.load(f)
+            print(f"System state loaded from {filename}")
+            return manager
+        except (IOError, pickle.PickleError) as e:
+            print(f"Error loading system state: {e}")
+            return None
 import unittest
 from src.pipeline_manager import PipelineManager
 
