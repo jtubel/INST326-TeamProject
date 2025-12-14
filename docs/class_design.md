@@ -70,4 +70,12 @@ Stores many `CaseRecord` objects and provides basic tools to clean and summarize
 - `to_dicts()` — Exports all records as dictionaries.  
 - `__str__()` — Shows a short dataset summary.
 
+Testing Strategy (Project 4)
+
+Unit Tests: We verified the CaseRecord class in isolation to ensure data integrity before it enters the pipeline.
+
+Integration Tests: We tested the PipelineManager's ability to hold AbstractDataset objects, verifying the composition relationship.
+
+System Tests: We simulated a user session where data is loaded, the application is closed (saved), and re-opened (loaded) to prove the "Data Persistence" requirement works.
+
 ---
