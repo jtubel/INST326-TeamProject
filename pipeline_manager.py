@@ -1,103 +1,69 @@
-from src.cleaning import fill_missing_values
-from src.transformations import count_unique_locations
-from src.alert_report import AlertReport
+import pickle
+import os
+from typing import Dict, Any
 
 class PipelineManager:
-    def __init__(self, data):
-        self.data = data
-        self.alert_report = None
-        self.results = {}
+    """
+    Central controller for the Health Data Pipeline.
+    Manages Datasets, Analyzers, and Data Persistence.
+    """
 
-    def run(self, config):
-        if config.get("clean"):
-            self.data = fill_missing_values(self.data)
+    def __init__(self):
+        """Initialize empty registries."""
+        self._datasets = [] 
+        self._analyzers = []
 
-        if config.get("analyze"):
-            self.alert_report = AlertReport(self.data)
-            self.results["alerts"] = self.alert_report.generate_alerts()
+    def add_dataset(self, dataset):
+        """Register a new dataset (CSV, JSON, or XML)."""
+        if not hasattr(dataset, 'load_data'):
+            raise TypeError("Invalid dataset: Must implement load_data interface.")
+        
+        print(f"Manager: Loading data from '{dataset.source_path}'...")
+        dataset.load_data()
+        self._datasets.append(dataset)
 
-        if config.get("summary"):
-            self.results["locations"] = count_unique_locations(self.data)
+    def register_analyzer(self, analyzer):
+        """Add an analysis tool to the pipeline."""
+        if not hasattr(analyzer, 'analyze'):
+            raise TypeError("Invalid tool: Must implement analyze interface.")
+        self._analyzers.append(analyzer)
 
-        return self.results
-      
-      import json
-from pathlib import Path
+    def run_full_analysis(self) -> Dict[str, Any]:
+        """Run all analyzers on all loaded data."""
+        all_records = []
+        for ds in self._datasets:
+            all_records.extend(ds.get_all_records())
 
-DATA_DIR = Path("data")
-DATA_DIR.mkdir(exist_ok=True)
+        if not all_records:
+            return {"error": "No data loaded"}
 
-def save_state(filename, state):
-    with open(DATA_DIR / filename, "w") as f:
-        json.dump(state, f)
+        results = {}
+        for analyzer in self._analyzers:
+            tool_name = analyzer.__class__.__name__
+            print(f"Running {tool_name}...")
+            results[tool_name] = analyzer.analyze(all_records)
+            
+        return results
 
-def load_state(filename):
-
-from src.persistence import save_state, load_state
-
-def save(self, filename):
-    save_state(filename, self.results)
-
-def load(self, filename):
-    self.results = load_state(filename)
-    with open(DATA_DIR / filename) as f:
-        return json.load(f)
-def save_state(self, filename: str = "pipeline_state.pkl"):
-        """
-        PROJ 4: DATA PERSISTENCE
-        Saves the current state of the pipeline (loaded datasets and analyzers) to a file.
-        """
+    # --- PROJECT 4: DATA PERSISTENCE ---
+    def save_state(self, filename: str = "pipeline_state.pkl"):
+        """Save the entire pipeline (datasets + analyzers) to a file."""
         try:
             with open(filename, 'wb') as f:
                 pickle.dump(self, f)
-            print(f"System state successfully saved to {filename}")
-        except IOError as e:
-            print(f"Error saving system state: {e}")
+            print(f"State saved to {filename}")
+        except Exception as e:
+            print(f"Error saving state: {e}")
 
     @staticmethod
     def load_state(filename: str = "pipeline_state.pkl"):
-        """
-        PROJ 4: DATA PERSISTENCE
-        Loads a previously saved pipeline state from a file.
-        """
+        """Load a pipeline from a file."""
         if not os.path.exists(filename):
-            print(f"No saved state found at {filename}")
+            print("Save file not found.")
             return None
-        
         try:
             with open(filename, 'rb') as f:
-                manager = pickle.load(f)
-            print(f"System state loaded from {filename}")
-            return manager
-        except (IOError, pickle.PickleError) as e:
-            print(f"Error loading system state: {e}")
+                return pickle.load(f)
+        except Exception as e:
+            print(f"Error loading state: {e}")
             return None
-import unittest
-from src.pipeline_manager import PipelineManager
-
-class TestIntegration(unittest.TestCase):
-    def test_pipeline_runs(self):
-        data = [{"cases": 100, "location": "MD"}]
-        pipeline = PipelineManager(data)
-
-        results = pipeline.run({
-            "clean": True,
-            "analyze": True,
-            "summary": True
-        })
-
-        self.assertIn("alerts", results)
-
-import unittest
-from src.pipeline_manager import PipelineManager
-
-class TestSystem(unittest.TestCase):
-    def test_save_and_load(self):
-        data = [{"cases": 200, "location": "NY"}]
-        pipeline = PipelineManager(data)
-        pipeline.run({"analyze": True})
-
-        pipeline.save("state.json")
-        pipeline.load("state.json")
-
-        self.assertTrue(pipeline.results)
