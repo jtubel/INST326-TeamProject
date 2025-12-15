@@ -4,33 +4,25 @@ Project 3: Concrete Implementation of an Analyzer.
 Inherits from AbstractAnalyzer (defined by Kindness).
 """
 
-from abc import ABC, abstractmethod
 from statistics import mean
-
-class AbstractAnalyzer(ABC):
-    @abstractmethod
-    def analyze(self, records: list):
-        pass
+from analysis_modules import AbstractAnalyzer
 
 class ForecastingAnalyzer(AbstractAnalyzer):
-  
-
+    
     def __init__(self, days_ahead=7):
         self.days_ahead = days_ahead
 
     def analyze(self, records: list):
         """
         Process records and predict future cases.
-        
-        Args:
-            records (list[CaseRecord]): List of case objects.
-            
-        Returns:
-            dict: Prediction results.
         """
-        # Extract numerical case data from records
- 
-        case_counts = [r.cases for r in records if isinstance(r.cases, (int, float))]
+        # Extract numerical case data safely
+        case_counts = []
+        for r in records:
+            # Handle both CaseRecord objects and dicts
+            val = r.cases if hasattr(r, 'cases') else r.get('cases', 0)
+            if isinstance(val, (int, float)):
+                case_counts.append(val)
         
         if len(case_counts) < 2:
             return {"error": "Insufficient data for prediction"}
