@@ -1,1 +1,1 @@
-
+I’m Julian, the QA Lead. My major learning curve was moving from writing simple scripts to designing a scalable Object-Oriented System. I learned that using Inheritance and Polymorphism isn't just about writing less code, it's about making the system flexible.
