@@ -119,10 +119,6 @@ The final phase successfully integrated all individual components (Data Ingestio
 ---
 
 ## Next Steps
-- **Merge Codebases:** Combine the finalized Phase 3 branches from all team members into the main repository.
-- **Implement Persistence:** Add logic to save the current analysis state to a file and reload it later.
-- **Develop Test Suite:** Write Integration and System tests to verify the full workflow (QA Lead responsibility).
-- **Finalize Documentation:** Update the README and Architecture docs to reflect the complete system.
 - **Record Presentation:** Film the group video covering domain goals, architecture, and individual learning statements.
 
 ---
