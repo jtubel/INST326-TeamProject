@@ -1,1 +1,3 @@
 I’m Julian, the QA Lead. My major learning curve was moving from writing simple scripts to designing a scalable Object-Oriented System. I learned that using Inheritance and Polymorphism isn't just about writing less code, it's about making the system flexible.
+
+Hello, my name is Chioma Agoh. I was documantation manager and my main learning curve was being able to convert functions into object-oriented components. I learned that added constructors really helped for the important attributes. 
